@@ -5,6 +5,7 @@ type App = {
   id: string;
   name: string;
   path: string;
+  bundleId?: string;
 };
 
 export default function SelectAppCommand() {
@@ -23,7 +24,8 @@ export default function SelectAppCommand() {
         const appList = applications.map((app) => ({
           id: app.bundleId || app.path,
           name: app.name,
-          path: app.path
+          path: app.path,
+          bundleId: app.bundleId
         }));
 
         setApps(appList);
@@ -50,8 +52,11 @@ export default function SelectAppCommand() {
 
   const handleSelectApp = async (app: App) => {
     try {
-      // Save only the app path
+      // Save app path and bundle ID
       await LocalStorage.setItem("selected_app_path", app.path);
+      if (app.bundleId) {
+        await LocalStorage.setItem("selected_app_bundle_id", app.bundleId);
+      }
       setSelectedApp(app.name);
     } catch (error) {
       console.error("Failed to save selected app:", error);
