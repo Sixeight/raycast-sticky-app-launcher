@@ -21,12 +21,20 @@ export default function SelectAppCommand() {
         const applications = await getApplications();
 
         // Map applications to our app type
-        const appList = applications.map((app) => ({
-          id: app.bundleId || app.path,
-          name: app.name,
-          path: app.path,
-          bundleId: app.bundleId
-        }));
+        const appList = applications.map((app) => {
+          // Special handling for apps with shortened names
+          let displayName = app.name;
+          if (app.bundleId === "com.microsoft.VSCode" && app.name === "Code") {
+            displayName = "Visual Studio Code";
+          }
+          
+          return {
+            id: app.bundleId || app.path,
+            name: displayName,
+            path: app.path,
+            bundleId: app.bundleId
+          };
+        });
 
         setApps(appList);
 
